@@ -1,5 +1,6 @@
 package com.example.messenger;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
@@ -7,11 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-
+import android.util.Log;
 
 public class MessengerActivity extends AppCompatActivity {
 
@@ -28,6 +30,7 @@ public class MessengerActivity extends AppCompatActivity {
             Bundle data = new Bundle();
             data.putString("msg","hi,this is client");
             msg.setData(data);
+            msg.replyTo = mGetReplyMessenger;
             try {
                 mService.send(msg);
             }catch (RemoteException e){
@@ -40,6 +43,22 @@ public class MessengerActivity extends AppCompatActivity {
 
         }
     };
+
+
+    private Messenger mGetReplyMessenger = new Messenger(new MessengerHandler());
+
+    private static class MessengerHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what){
+                case MyConstants.MSG_FROM_SERVICE:
+                    Log.i(TAG,"receive msg from Service:"+msg.getData().getString("reply"));
+                    break;
+                default:super.handleMessage(msg);
+
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,4 +77,6 @@ public class MessengerActivity extends AppCompatActivity {
         unbindService(mConnection);
         super.onDestroy();
     }
+
+
 }
