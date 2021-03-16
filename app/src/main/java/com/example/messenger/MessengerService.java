@@ -11,7 +11,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-class MessengerService extends Service {
+public class MessengerService extends Service {
 
     private static final String TAG = "MessengerService";
 
@@ -40,3 +40,13 @@ class MessengerService extends Service {
         return mMessenger.getBinder();
     }
 }
+
+
+
+
+
+
+
+
+
+
